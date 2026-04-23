@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚗 Madrid → Porto → Lisboa · Mayo 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #1a3a5c;
+    --azul-medio: #2d5f8a;
+    --azul-claro: #4a8db7;
+    --crema: #fdf6ec;
+    --naranja: #e8703a;
+    --naranja-suave: #f5a97a;
+    --verde: #3a7d5a;
+    --verde-claro: #e8f4ed;
+    --rojo: #c0392b;
+    --amarillo: #f0c040;
+    --gris-claro: #f0f2f5;
+    --texto: #1a2535;
+    --texto-suave: #5a6a7a;
+    --blanco: #ffffff;
+    --sombra: 0 4px 24px rgba(26,58,92,0.10);
+    --sombra-hover: 0 8px 32px rgba(26,58,92,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--crema);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-medio) 60%, var(--azul-claro) 100%);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .header-inner { position: relative; max-width: 1000px; margin: 0 auto; }
+  .route-line {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+    opacity: 0.75; margin-bottom: 0.5rem;
+  }
+  .route-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--naranja); }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle { opacity: 0.8; font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .viajeros {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .viajero-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .familia-badge {
+    font-size: 0.7rem; opacity: 0.7; display: block; text-align: center;
+    margin-top: 0.75rem; letter-spacing: 0.05em;
+  }
+
+  /* TABS NAV */
+  nav.tabs {
+    background: var(--azul);
+    display: flex; overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(26,58,92,0.3);
+  }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex: none;
+    background: none; border: none; cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    padding: 0.9rem 1.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.04em;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    color: white;
+    border-bottom-color: var(--naranja);
+  }
+  .tab-btn:hover { color: rgba(255,255,255,0.9); }
+
+  /* MAIN */
+  main { max-width: 1000px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* SECTION HEADERS */
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem; margin-top: 0.5rem;
+  }
+  .section-head h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 700;
+    color: var(--azul);
+  }
+  .badge {
+    background: var(--naranja); color: white;
+    border-radius: 12px; padding: 0.2rem 0.6rem;
+    font-size: 0.75rem; font-weight: 600;
+  }
+
+  /* ITINERARY */
+  .day-block {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--sombra);
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    border: 1px solid rgba(26,58,92,0.06);
+  }
+  .day-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(90deg, var(--azul) 0%, var(--azul-medio) 100%);
+    color: white;
+  }
+  .day-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 900; line-height: 1;
+    opacity: 0.9;
+  }
+  .day-info { flex: 1; }
+  .day-title { font-weight: 600; font-size: 1rem; }
+  .day-date { font-size: 0.8rem; opacity: 0.7; }
+  .city-flag {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; background: rgba(255,255,255,0.15);
+  }
+  .day-body { padding: 1rem 1.25rem; }
+  .activity-list { list-style: none; }
+  .activity-item {
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--gris-claro);
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .ico-drive { background: #fff3e0; }
+  .ico-sight { background: #e3f2fd; }
+  .ico-eat { background: #fce4ec; }
+  .ico-sleep { background: #e8f5e9; }
+  .ico-warn { background: #fff8e1; }
+  .activity-text { flex: 1; }
+  .activity-title { font-weight: 600; font-size: 0.9rem; }
+  .activity-desc { font-size: 0.8rem; color: var(--texto-suave); margin-top: 0.1rem; line-height: 1.4; }
+  .activity-time {
+    font-size: 0.75rem; color: var(--naranja);
+    font-weight: 600; white-space: nowrap;
+    margin-top: 0.15rem;
+  }
+  .tip-box {
+    background: var(--verde-claro);
+    border-left: 3px solid var(--verde);
+    border-radius: 8px; padding: 0.75rem 1rem;
+    margin-top: 0.75rem; font-size: 0.82rem;
+    color: #2d5a3d;
+  }
+  .warn-box {
+    background: #fff8e1;
+    border-left: 3px solid var(--amarillo);
+    border-radius: 8px; padding: 0.75rem 1rem;
+    margin-top: 0.75rem; font-size: 0.82rem;
+    color: #7a5c00;
+  }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    border: 1px solid rgba(26,58,92,0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .card:hover {
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-2px);
+  }
+  .card-city-bar {
+    height: 5px;
+  }
+  .bar-porto { background: linear-gradient(90deg, #1a3a5c, #4a8db7); }
+  .bar-lisboa { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+  .bar-ruta { background: linear-gradient(90deg, #3a7d5a, #27ae60); }
+  .card-body { padding: 1rem; }
+  .card-type {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--texto-suave); font-weight: 600; margin-bottom: 0.3rem;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; line-height: 1.3; }
+  .card p { font-size: 0.8rem; color: var(--texto-suave); line-height: 1.4; margin-bottom: 0.5rem; }
+  .card-meta {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .meta-tag {
+    background: var(--gris-claro);
+    border-radius: 10px; padding: 0.2rem 0.6rem;
+    font-size: 0.72rem; color: var(--texto-suave);
+  }
+  .meta-tag.verde { background: var(--verde-claro); color: var(--verde); }
+  .meta-tag.azul { background: #e3f2fd; color: var(--azul-medio); }
+  .meta-tag.rojo { background: #fdecea; color: var(--rojo); }
+  .stars { color: var(--amarillo); font-size: 0.75rem; }
+  .card-status {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; cursor: pointer;
+    border: 2px solid var(--gris-claro);
+    background: white;
+    transition: all 0.2s;
+  }
+  .card-status.pendiente { border-color: #ccc; }
+  .card-status.confirmado { background: var(--verde); border-color: var(--verde); color: white; }
+  .card-status.descartado { background: var(--rojo); border-color: var(--rojo); color: white; }
+
+  /* HOTELES */
+  .hotel-card {
+    background: white; border-radius: 14px; padding: 1.25rem;
+    box-shadow: var(--sombra); margin-bottom: 1rem;
+    border: 1px solid rgba(26,58,92,0.06);
+    display: flex; gap: 1rem; align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .hotel-icon {
+    font-size: 2rem; min-width: 48px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hotel-info { flex: 1; min-width: 200px; }
+  .hotel-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .hotel-info p { font-size: 0.82rem; color: var(--texto-suave); }
+  .hotel-dates {
+    background: var(--gris-claro); border-radius: 8px; padding: 0.5rem 0.75rem;
+    font-size: 0.8rem; color: var(--azul); font-weight: 600; white-space: nowrap;
+  }
+  .hotel-input-area {
+    width: 100%; margin-top: 0.75rem;
+  }
+  .hotel-input {
+    width: 100%; padding: 0.6rem 0.75rem;
+    border: 2px solid var(--gris-claro);
+    border-radius: 8px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; color: var(--texto);
+    transition: border-color 0.2s;
+    resize: vertical; min-height: 60px;
+  }
+  .hotel-input:focus { outline: none; border-color: var(--azul-claro); }
+  .hotel-input::placeholder { color: #aaa; }
+
+  /* LOGISTICA */
+  .logistica-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+  @media (max-width: 540px) { .logistica-grid { grid-template-columns: 1fr; } }
+  .logistica-card {
+    background: white; border-radius: 14px; padding: 1.25rem;
+    box-shadow: var(--sombra); border: 1px solid rgba(26,58,92,0.06);
+  }
+  .logistica-card h3 {
+    font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.4rem;
+    color: var(--azul);
+  }
+  .logistica-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--gris-claro);
+    font-size: 0.82rem;
+  }
+  .logistica-row:last-child { border-bottom: none; }
+  .logistica-label { color: var(--texto-suave); }
+  .logistica-val { font-weight: 600; color: var(--texto); }
+  .partido-box {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    color: white; border-radius: 14px; padding: 1.25rem;
+    box-shadow: var(--sombra); grid-column: 1 / -1;
+  }
+  .partido-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+  .partido-info { display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.85rem; }
+  .partido-dato { display: flex; flex-direction: column; gap: 0.1rem; }
+  .partido-dato span:first-child { font-size: 0.7rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.08em; }
+  .partido-dato span:last-child { font-weight: 700; }
+
+  /* PRESUPUESTO */
+  .presupuesto-total {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%);
+    color: white; border-radius: 16px; padding: 1.5rem;
+    text-align: center; margin-bottom: 1.25rem;
+    box-shadow: var(--sombra);
+  }
+  .presupuesto-total .label { font-size: 0.8rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.1em; }
+  .presupuesto-total .monto { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; }
+  .presupuesto-total .nota { font-size: 0.8rem; opacity: 0.65; margin-top: 0.25rem; }
+  .presupuesto-tabla {
+    background: white; border-radius: 14px; overflow: hidden;
+    box-shadow: var(--sombra); border: 1px solid rgba(26,58,92,0.06);
+  }
+  .presupuesto-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--gris-claro);
+  }
+  .presupuesto-row:last-child { border-bottom: none; }
+  .presupuesto-row .icon { font-size: 1.1rem; min-width: 24px; }
+  .presupuesto-row .concepto { flex: 1; font-size: 0.88rem; font-weight: 500; }
+  .presupuesto-row .est { font-size: 0.78rem; color: var(--texto-suave); flex: 1; }
+  .presupuesto-row .valor { font-weight: 700; font-size: 0.9rem; color: var(--azul); white-space: nowrap; }
+  input[type="number"].presupuesto-input {
+    border: 2px solid var(--gris-claro); border-radius: 8px;
+    padding: 0.3rem 0.5rem; width: 90px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    color: var(--texto); text-align: right;
+    transition: border-color 0.2s;
+  }
+  input[type="number"].presupuesto-input:focus { outline: none; border-color: var(--azul-claro); }
+
+  /* FILTER CHIPS */
+  .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .filter-chip {
+    background: white; border: 2px solid var(--gris-claro);
+    border-radius: 20px; padding: 0.35rem 0.85rem;
+    font-size: 0.8rem; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; color: var(--texto-suave);
+  }
+  .filter-chip.active {
+    background: var(--azul); border-color: var(--azul);
+    color: white;
+  }
+
+  /* NOTAS SECTION */
+  .notas-area {
+    background: white; border-radius: 14px; padding: 1.25rem;
+    box-shadow: var(--sombra); margin-bottom: 1rem;
+    border: 1px solid rgba(26,58,92,0.06);
+  }
+  .notas-area h3 { font-size: 0.9rem; font-weight: 700; color: var(--azul); margin-bottom: 0.75rem; }
+  .notas-input {
+    width: 100%; border: 2px solid var(--gris-claro); border-radius: 8px;
+    padding: 0.75rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; color: var(--texto);
+    resize: vertical; min-height: 100px; transition: border-color 0.2s;
+  }
+  .notas-input:focus { outline: none; border-color: var(--azul-claro); }
+  .notas-input::placeholder { color: #bbb; }
+
+  /* PRINT */
+  @media print {
+    nav.tabs { display: none !important; }
+    .tab-content { display: block !important; page-break-before: always; }
+    .tab-content:first-of-type { page-break-before: avoid; }
+  }
+
+  /* SCROLL */
+  html { scroll-behavior: smooth; }
+
+  .ciudad-label {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; margin: 1.25rem 0 0.6rem;
+    color: var(--texto-suave); display: flex; align-items: center; gap: 0.4rem;
+  }
+  .ciudad-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--gris-claro);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="route-line">
+      <span class="route-dot"></span>
+      Madrid
+      <span>→</span>
+      Porto
+      <span>→</span>
+      Lisboa
+      <span>→</span>
+      Madrid
+    </div>
+    <h1>Viaje a Portugal 🇵🇹</h1>
+    <p class="subtitle">3 – 9 de Mayo · En carro · Dos familias · ¡Con niños!</p>
+    <div class="viajeros">
+      <span class="viajero-tag">🧔 Rodolfo 44</span>
+      <span class="viajero-tag">👩 Lucciana 41</span>
+      <span class="viajero-tag">🧒 Vicente 10</span>
+      <span class="viajero-tag">👧 Antonia 12</span>
+      <span class="viajero-tag" style="background:rgba(232,112,58,0.3)">🧔 Gino 45</span>
+      <span class="viajero-tag" style="background:rgba(232,112,58,0.3)">👩 Paloma 41</span>
+      <span class="viajero-tag" style="background:rgba(232,112,58,0.3)">👧 Micaela 13</span>
+      <span class="viajero-tag" style="background:rgba(232,112,58,0.3)">👧 Lucía 10</span>
+      <span class="viajero-tag" style="background:rgba(232,112,58,0.3)">👶 Emilio 1</span>
+    </div>
+    <span class="familia-badge">🏠 Familia Braganini · 🏠 Familia Betocky</span>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" onclick="showTab('itinerario')">📅 Itinerario</button>
+  <button class="tab-btn" onclick="showTab('restaurantes')">🍽️ Restaurantes</button>
+  <button class="tab-btn" onclick="showTab('sitios')">🏛️ Sitios</button>
+  <button class="tab-btn" onclick="showTab('hoteles')">🏨 Alojamiento</button>
+  <button class="tab-btn" onclick="showTab('logistica')">🚗 Logística</button>
+  <button class="tab-btn" onclick="showTab('presupuesto')">💶 Presupuesto</button>
+  <button class="tab-btn" onclick="showTab('notas')">📝 Notas</button>
+</nav>
+
+<main>
+
+<!-- ======================== ITINERARIO ======================== -->
+<div class="tab-content active" id="tab-itinerario">
+
+  <!-- DÍA 1 -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-num">01</div>
+      <div class="day-info">
+        <div class="day-title">Madrid → Porto</div>
+        <div class="day-date">Sábado 3 de Mayo</div>
+      </div>
+      <div class="city-flag">🚗</div>
+    </div>
+    <div class="day-body">
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon ico-drive">🌅</div>
+          <div class="activity-text">
+            <div class="activity-title">Salida de Madrid</div>
+            <div class="activity-desc">Salida temprana recomendada. El trayecto Madrid–Porto son ~6h (460 km). Por A-6 o A-62 hasta Salamanca, luego hacia la frontera y Porto.</div>
+            <div class="activity-time">~07:00 - 08:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">☕</div>
+          <div class="activity-text">
+            <div class="activity-title">Parada en Salamanca (recomendada)</div>
+            <div class="activity-desc">Desayuno o café en la Plaza Mayor. Perfecta para estirar las piernas con los niños. 1h de desvío mínimo.</div>
+            <div class="activity-time">~10:00 - 11:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-drive">🇵🇹</div>
+          <div class="activity-text">
+            <div class="activity-title">Cruce de frontera · Vilar Formoso</div>
+            <div class="activity-desc">Frontera fluida. Ya en Portugal el paisaje cambia mucho. Se nota el Duero a lo lejos.</div>
+            <div class="activity-time">~12:00 - 13:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🏙️</div>
+          <div class="activity-text">
+            <div class="activity-title">Llegada y primer paseo por el Casco Histórico</div>
+            <div class="activity-desc">Ribeira (orilla del Duero) + Puente Dom Luís I a pie. Los niños van a flipar con el puente. Sunset desde el Jardim do Morro (Vila Nova de Gaia).</div>
+            <div class="activity-time">~15:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">🍷</div>
+          <div class="activity-text">
+            <div class="activity-title">Cena en Porto</div>
+            <div class="activity-desc">Primera cena portuguesa. Ver sección Restaurantes para opciones según el humor del día.</div>
+            <div class="activity-time">~20:00 hs</div>
+          </div>
+        </li>
+      </ul>
+      <div class="tip-box">💡 <strong>Tip:</strong> Con dos carros y niños, salir bien temprano es clave. El trayecto por Salamanca es el más bonito y da juego para el almuerzo.</div>
+    </div>
+  </div>
+
+  <!-- DÍA 2 -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-num">02</div>
+      <div class="day-info">
+        <div class="day-title">Porto · Día completo</div>
+        <div class="day-date">Domingo 4 de Mayo</div>
+      </div>
+      <div class="city-flag">🍷</div>
+    </div>
+    <div class="day-body">
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">⛪</div>
+          <div class="activity-text">
+            <div class="activity-title">Torre dos Clérigos</div>
+            <div class="activity-desc">Sube los 240 peldaños para las mejores vistas de Porto. Para Antonia y Vicente una aventura. ~€10/persona. Reservar online.</div>
+            <div class="activity-time">09:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🦚</div>
+          <div class="activity-text">
+            <div class="activity-title">Jardines del Palacio de Cristal</div>
+            <div class="activity-desc">Pavos reales y gallinas sueltas por el parque — los niños se vuelven locos. Vistas al Duero. Entrada gratuita.</div>
+            <div class="activity-time">11:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">🦑</div>
+          <div class="activity-text">
+            <div class="activity-title">Almuerzo en el barrio</div>
+            <div class="activity-desc">Probar la Francesinha (el sándwich icónico de Porto) o un bacalhau. Ver sección restaurantes.</div>
+            <div class="activity-time">13:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🏛️</div>
+          <div class="activity-text">
+            <div class="activity-title">Palácio da Bolsa</div>
+            <div class="activity-desc">Tour guiado 30 min. La Sala Árabe es impresionante — tipo Alhambra. ~€14/adulto. Muy recomendado con los adolescentes.</div>
+            <div class="activity-time">15:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🌅</div>
+          <div class="activity-text">
+            <div class="activity-title">Sunset en Jardim do Morro · Gaia</div>
+            <div class="activity-desc">El mejor mirador de Porto. Se cruza el puente Dom Luís a pie. Hay música en vivo, ambiente increíble. Cervezas a 2€.</div>
+            <div class="activity-time">18:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">🍷</div>
+          <div class="activity-text">
+            <div class="activity-title">Cena + Bodegas de Oporto (Gaia)</div>
+            <div class="activity-desc">Las bodegas de Vinho do Porto están en Vila Nova de Gaia. Algunas tienen degustaciones familiares. Graham's, Sandeman y Taylor's son las mejores.</div>
+            <div class="activity-time">20:00 hs</div>
+          </div>
+        </li>
+      </ul>
+      <div class="tip-box">💡 <strong>Para los niños:</strong> El barco Rabelo por el Duero (30 min) es una de las actividades más disfrutadas en familia. Sale desde Ribeira.</div>
+    </div>
+  </div>
+
+  <!-- DÍA 3 -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-num">03</div>
+      <div class="day-info">
+        <div class="day-title">Porto → Lisboa</div>
+        <div class="day-date">Lunes 5 de Mayo</div>
+      </div>
+      <div class="city-flag">🚗</div>
+    </div>
+    <div class="day-body">
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">☕</div>
+          <div class="activity-text">
+            <div class="activity-title">Desayuno + última vuelta por Porto</div>
+            <div class="activity-desc">Un pastel de nata con un galão (café con leche portugués). Despedida del Duero.</div>
+            <div class="activity-time">09:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-drive">🛣️</div>
+          <div class="activity-text">
+            <div class="activity-title">Porto → Lisboa · A1</div>
+            <div class="activity-desc">~3h15 por autopista. Hay un área de servicio en Coimbra ideal para parar. Coimbra tiene una universidad medieval muy impresionante (opcional +1h).</div>
+            <div class="activity-time">10:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🏰</div>
+          <div class="activity-text">
+            <div class="activity-title">Llegada · Barrio de Alfama</div>
+            <div class="activity-desc">Primeras impresiones de Lisboa. El Castelo de São Jorge se ve desde lejos. Buen primer paseo por los callejones de Alfama.</div>
+            <div class="activity-time">14:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🎭</div>
+          <div class="activity-text">
+            <div class="activity-title">Miradouro de Santa Luzia</div>
+            <div class="activity-desc">Una de las mejores vistas de la ciudad y el río Tajo. Azulejos preciosos. Muy cerca del castillo. El tranvía 28 pasa justo aquí.</div>
+            <div class="activity-time">16:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">🎸</div>
+          <div class="activity-text">
+            <div class="activity-title">Cena con Fado en Alfama</div>
+            <div class="activity-desc">Experiencia cultural imperdible. Casa Dona Amália tiene fado en vivo con cena. Los niños suelen quedar fascinados con el ambiente.</div>
+            <div class="activity-time">20:00 hs</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DÍA 4 -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-num">04</div>
+      <div class="day-info">
+        <div class="day-title">Lisboa · Belém + Chiado</div>
+        <div class="day-date">Martes 6 de Mayo</div>
+      </div>
+      <div class="city-flag">🇵🇹</div>
+    </div>
+    <div class="day-body">
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">⛵</div>
+          <div class="activity-text">
+            <div class="activity-title">Pastéis de Belém + Monasterio de los Jerónimos</div>
+            <div class="activity-desc">La fábrica original de pastéis de nata desde 1837. El monasterio es pura arquitectura manuelina espectacular. Torre de Belém a 10 min caminando.</div>
+            <div class="activity-time">09:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🌊</div>
+          <div class="activity-text">
+            <div class="activity-title">Torre de Belém + paseo al río</div>
+            <div class="activity-desc">Icónica. Se puede ver el Puente 25 de Abril (como el Golden Gate). Zona con áreas verdes junto al Tajo, ideal para el bebé Emilio.</div>
+            <div class="activity-time">11:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">🐙</div>
+          <div class="activity-text">
+            <div class="activity-title">Almuerzo en Belém o Chiado</div>
+            <div class="activity-desc">El SUD Lisboa tiene terraza con vistas al puente y al río. Alternativa: Time Out Market en Cais do Sodré (variado, perfecto para grupos con niños).</div>
+            <div class="activity-time">13:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🛍️</div>
+          <div class="activity-text">
+            <div class="activity-title">Barrio del Chiado + Baixa</div>
+            <div class="activity-desc">Paseo por la zona más animada de Lisboa. Elevador de Santa Justa, Praça do Comércio al río. Tranvía vintage por las calles empedradas.</div>
+            <div class="activity-time">15:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🌆</div>
+          <div class="activity-text">
+            <div class="activity-title">Miradouro de São Pedro de Alcântara (sunset)</div>
+            <div class="activity-desc">Las mejores vistas panorámicas con el castillo de fondo. Muy popular al atardecer. Helados y terrazas alrededor.</div>
+            <div class="activity-time">18:30 hs</div>
+          </div>
+        </li>
+      </ul>
+      <div class="tip-box">💡 <strong>Tip niños:</strong> El Oceanário de Lisboa (acuario) es una de las mejores experiencias para los chicos. En el Parque das Nações, 30 min del centro. Considerar para el día 7.</div>
+    </div>
+  </div>
+
+  <!-- DÍA 5 -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-num">05</div>
+      <div class="day-info">
+        <div class="day-title">Lisboa · Castillo + Sintra (opcional)</div>
+        <div class="day-date">Miércoles 7 de Mayo</div>
+      </div>
+      <div class="city-flag">🏰</div>
+    </div>
+    <div class="day-body">
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🏰</div>
+          <div class="activity-text">
+            <div class="activity-title">Castelo de São Jorge</div>
+            <div class="activity-desc">Vistas 360° impresionantes. Pavos reales en libertad (¡los niños flipan!). Con audio guía gratuita desde la app. ~€15/adulto.</div>
+            <div class="activity-time">09:30 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🎡</div>
+          <div class="activity-text">
+            <div class="activity-title">Sintra (excursión · 30 min en carro)</div>
+            <div class="activity-desc">El Palácio da Pena es de otro mundo — tipo Disney de verdad. Colorido, en lo alto de una colina, con bosques. Perfecto para Antonia y Vicente. Día completo si van.</div>
+            <div class="activity-time">Todo el día (opcional)</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🐠</div>
+          <div class="activity-text">
+            <div class="activity-title">Oceanário (alternativa a Sintra)</div>
+            <div class="activity-desc">Uno de los mejores acuarios de Europa. El bebé Emilio va a quedar feliz con los peces. En Parque das Nações. ~€22/adulto, €14/niño.</div>
+            <div class="activity-time">10:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-eat">🍽️</div>
+          <div class="activity-text">
+            <div class="activity-title">Cena de despedida de Lisboa</div>
+            <div class="activity-desc">Última cena juntos en Lisboa. Ver Restaurantes para opciones especiales. Considerar reservar con antelación para 9 personas.</div>
+            <div class="activity-time">20:00 hs</div>
+          </div>
+        </li>
+      </ul>
+      <div class="warn-box">⚠️ <strong>Decisión:</strong> ¿Se quedan una noche más (hasta el 8 y salen el 9 al mediodía) o regresan el 8? El partido del Atleti es el <strong>9 de mayo a las 18:30h</strong> en el Metropolitano. Lisboa–Madrid son ~6h → salir antes de las 12:00h del 9.</div>
+    </div>
+  </div>
+
+  <!-- DÍA 6 (opcional) -->
+  <div class="day-block" style="border: 2px dashed #c0c0c0;">
+    <div class="day-header" style="background: linear-gradient(90deg, #666, #888);">
+      <div class="day-num">06</div>
+      <div class="day-info">
+        <div class="day-title">Lisboa → Madrid (si se quedan noche extra)</div>
+        <div class="day-date">Jueves 8 de Mayo · Opcional</div>
+      </div>
+      <div class="city-flag">🤔</div>
+    </div>
+    <div class="day-body">
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon ico-sight">🌊</div>
+          <div class="activity-text">
+            <div class="activity-title">Mañana libre en Lisboa</div>
+            <div class="activity-desc">Compras, mercado de la Ribeira, o cualquier cosa pendiente. El barrio de LX Factory los domingos es una pasada.</div>
+            <div class="activity-time">Mañana</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-drive">🚗</div>
+          <div class="activity-text">
+            <div class="activity-title">Salida Lisboa → Madrid</div>
+            <div class="activity-desc">Por la A6/E90 directo. ~6h sin paradas mayores. Parada recomendada en Badajoz o Mérida (la romana es impresionante) para el almuerzo.</div>
+            <div class="activity-time">12:00 - 13:00 hs</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DÍA 7 -->
+  <div class="day-block" style="border-top: 4px solid #c0392b;">
+    <div class="day-header" style="background: linear-gradient(90deg, #c0392b, #e74c3c);">
+      <div class="day-num">09</div>
+      <div class="day-info">
+        <div class="day-title">Regreso a Madrid ⚽ Partido Atlético</div>
+        <div class="day-date">Viernes 9 de Mayo</div>
+      </div>
+      <div class="city-flag">⚽</div>
+    </div>
+    <div class="day-body">
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon ico-drive">🚀</div>
+          <div class="activity-text">
+            <div class="activity-title">Salida de Lisboa (si duermen allí el 8)</div>
+            <div class="activity-desc">Salir como máximo a las 10:00h para llegar con margen a Madrid antes del partido.</div>
+            <div class="activity-time">Antes de las 10:00 hs</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon ico-warn">⚽</div>
+          <div class="activity-text">
+            <div class="activity-title">Partido Atlético de Madrid · Metropolitano</div>
+            <div class="activity-desc">Estadio Wanda Metropolitano. Apertura de puertas ~1h antes. Llegar con tiempo para aparcar y entrar.</div>
+            <div class="activity-time">18:30 hs</div>
+          </div>
+        </li>
+      </ul>
+      <div class="warn-box">⚠️ <strong>Importante:</strong> Lisboa–Madrid son ~6h de trayecto real (más paradas). Si salen de Lisboa el día 9, hay que madrugar. La opción más cómoda: dormir en Lisboa el 7, salir el 8 hacia Madrid con calma.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ======================== RESTAURANTES ======================== -->
+<div class="tab-content" id="tab-restaurantes">
+  <div class="section-head">
+    <h2>Restaurantes seleccionados</h2>
+    <span class="badge">9 opciones</span>
+  </div>
+  <div class="filters">
+    <button class="filter-chip active" onclick="filterCards('rest', 'todos', this)">Todos</button>
+    <button class="filter-chip" onclick="filterCards('rest', 'Porto', this)">🍷 Porto</button>
+    <button class="filter-chip" onclick="filterCards('rest', 'Lisboa', this)">🏛️ Lisboa</button>
+  </div>
+
+  <div class="ciudad-label">🍷 Porto</div>
+  <div class="cards-grid" id="rest-grid">
+    <div class="card" data-ciudad="Porto">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">🍽️ Restaurante · Porto</div>
+        <h3>DAMA pé de cabra</h3>
+        <div class="stars">★★★★★</div>
+        <p>El más auténtico de Porto. Pareja que cocina y atiende. El dueño explica cada plato con pasión. Cocina portuguesa tradicional sublime. Pulpo, bacalhau, pan de castaño.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€€</span>
+          <span class="meta-tag azul">Reserva obligatoria</span>
+          <span class="meta-tag">Mar-Dom almuerzo/cena</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">🍽️ Restaurante · Porto</div>
+        <h3>Voltaria – Petisqueira Portuguesa</h3>
+        <div class="stars">★★★★★</div>
+        <p>Comida casera portuguesa auténtica. Francesinha, bacalhau, caldo verde. Ambiente acogedor, perfecto para grupos. Puede haber cola pero vale la pena.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€</span>
+          <span class="meta-tag azul">Llegar temprano</span>
+          <span class="meta-tag">Lun-Sáb solo almuerzo</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">🥩 Parrilla · Porto</div>
+        <h3>Bota & Bira</h3>
+        <div class="stars">★★★★★</div>
+        <p>El mejor filete de Porto. Artur el camarero es legendario. Carne perfecta, arroz de chorizo increíble. Muy bien para los adultos. Reservar 1 día antes.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€€</span>
+          <span class="meta-tag rojo">Reserva esencial</span>
+          <span class="meta-tag">Mar-Sáb solo cena</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">🐙 Mariscos · Porto</div>
+        <h3>Taberna Dos Mercadores</h3>
+        <div class="stars">★★★★½</div>
+        <p>Mariscos y pescados artesanales. El arroz de pulpo es famoso. Solo 16 mesas, cola inevitable. Llegar a las 6pm o reservar. Muy auténtico.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€€</span>
+          <span class="meta-tag azul">Llegar temprano</span>
+          <span class="meta-tag">Mar-Dom almuerzo/cena</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">✨ Fusión · Porto</div>
+        <h3>The Door</h3>
+        <div class="stars">★★★★★</div>
+        <p>5 estrellas consistentes en +2.000 reseñas. Menú pequeño pero perfecto. Reservas online fáciles. Para una cena especial en grupo. Sangría roja imperdible.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€€</span>
+          <span class="meta-tag azul">Reserva online</span>
+          <span class="meta-tag">Todos los días</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+
+    <div class="ciudad-label" style="grid-column:1/-1">🏛️ Lisboa</div>
+
+    <div class="card" data-ciudad="Lisboa">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🎸 Fado + Cena · Lisboa</div>
+        <h3>Dona Amália – Casa de Fado</h3>
+        <div class="stars">★★★★★</div>
+        <p>Experiencia cultural completa: cena + fado en vivo. Solo 20-25 personas, ambiente íntimo. El pulpo, el bacalhau y el vinho verde son excelentes. Imprescindible.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€€</span>
+          <span class="meta-tag rojo">Reserva imprescindible</span>
+          <span class="meta-tag">Mar-Dom desde 17h</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Lisboa">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🍷 Portugués · Lisboa</div>
+        <h3>Cantinho da Rosa</h3>
+        <div class="stars">★★★★★</div>
+        <p>Pedro el camarero es un crack. Las almejas son las mejores de Lisboa. Bacalhau à Brás y pulpo legendarios. Ambiente familiar auténtico. Muy buen precio.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€</span>
+          <span class="meta-tag azul">Reserva recomendable</span>
+          <span class="meta-tag">Lun-Sáb almuerzo/cena</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Lisboa">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🌊 Terraza · Lisboa</div>
+        <h3>SUD Lisboa Terrazza</h3>
+        <div class="stars">★★★★½</div>
+        <p>Vistas al río Tajo y al Puente 25 de Abril. Ambiente muy chic. Para una cena o almuerzo especial en Belém. Buen lubina y risotto de hongos. Algo más caro.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€€€</span>
+          <span class="meta-tag azul">Reservar</span>
+          <span class="meta-tag">Todos los días</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Lisboa">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🥩 Cocina moderna · Lisboa</div>
+        <h3>A Nossa Casa</h3>
+        <div class="stars">★★★★★</div>
+        <p>El mejor cerdo y la mejor carne de Lisboa según múltiples reseñas. El ceviche provoca lágrimas de emoción. Decoración espectacular. Para la cena especial.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">€€</span>
+          <span class="meta-tag rojo">Reserva obligatoria</span>
+          <span class="meta-tag">Todos los días desde 18:30h</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" title="Click para cambiar estado" onclick="toggleStatus(this)">○</div>
+    </div>
+  </div>
+  <div style="margin-top:1rem; padding: 0.75rem 1rem; background:white; border-radius:12px; font-size:0.8rem; color:var(--texto-suave); box-shadow:var(--sombra);">
+    💡 <strong>Click en el círculo</strong> de cada tarjeta para marcarla como ✅ Confirmada o ❌ Descartada
+  </div>
+</div>
+
+<!-- ======================== SITIOS ======================== -->
+<div class="tab-content" id="tab-sitios">
+  <div class="section-head">
+    <h2>Sitios turísticos</h2>
+    <span class="badge">10 lugares</span>
+  </div>
+  <div class="filters">
+    <button class="filter-chip active" onclick="filterCards('sitio', 'todos', this)">Todos</button>
+    <button class="filter-chip" onclick="filterCards('sitio', 'Porto', this)">🍷 Porto</button>
+    <button class="filter-chip" onclick="filterCards('sitio', 'Lisboa', this)">🏛️ Lisboa</button>
+    <button class="filter-chip" onclick="filterCards('sitio', 'niños', this)">👧 Ideal niños</button>
+  </div>
+
+  <div class="ciudad-label">🍷 Porto</div>
+  <div class="cards-grid" id="sitio-grid">
+    <div class="card" data-ciudad="Porto" data-kids="si">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">🌳 Parque · Porto</div>
+        <h3>Jardines del Palácio de Cristal</h3>
+        <div class="stars">★★★★½</div>
+        <p>Pavos reales y gallinas sueltas por el parque. Vistas al Duero. Gratuito. Los niños disfrutan muchísimo. Zona muy tranquila para Emilio también.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">Gratis</span>
+          <span class="meta-tag azul">Apto bebé</span>
+          <span class="meta-tag">👧 Top niños</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">⛪ Monumento · Porto</div>
+        <h3>Torre dos Clérigos</h3>
+        <div class="stars">★★★★½</div>
+        <p>Subida de 240 escalones para las mejores vistas panorámicas de Porto. Arquitectura barroca del s. XVIII. Reservar online para evitar colas.</p>
+        <div class="card-meta">
+          <span class="meta-tag">~€10/persona</span>
+          <span class="meta-tag azul">9:00 - 19:00</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">🏛️ Palacio · Porto</div>
+        <h3>Palácio da Bolsa</h3>
+        <div class="stars">★★★★½</div>
+        <p>Tour guiado de 30 min. La Sala Árabe es lo más impresionante — influencias de la Alhambra. Para los adolescentes es muy impactante. ~€14/adulto.</p>
+        <div class="card-meta">
+          <span class="meta-tag">~€14/adulto</span>
+          <span class="meta-tag azul">9:00 - 18:30</span>
+          <span class="meta-tag">Tour obligatorio</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto" data-kids="si">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">🌅 Mirador · Porto/Gaia</div>
+        <h3>Jardim do Morro (Sunset)</h3>
+        <div class="stars">★★★★★</div>
+        <p>El mejor atardecer de Porto. Cruzar el puente Dom Luís a pie. Música en vivo, ambiente festivo, cervezas a 2€. Una de las mejores experiencias gratuitas.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">Gratis</span>
+          <span class="meta-tag azul">24h abierto</span>
+          <span class="meta-tag">👧 Toda la familia</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Porto" data-kids="si">
+      <div class="card-city-bar bar-porto"></div>
+      <div class="card-body">
+        <div class="card-type">⛵ Actividad · Duero</div>
+        <h3>Crucero en Barco Rabelo</h3>
+        <div class="stars">★★★★★</div>
+        <p>30 minutos por el río Duero bajo los 6 puentes de Porto. Los barcos tradicionales son preciosos. Sale desde Ribeira. ~€15/adulto, gratis menores de 4.</p>
+        <div class="card-meta">
+          <span class="meta-tag">~€15/adulto</span>
+          <span class="meta-tag azul">Reservar</span>
+          <span class="meta-tag">👧 Top niños</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+
+    <div class="ciudad-label" style="grid-column:1/-1">🏛️ Lisboa</div>
+
+    <div class="card" data-ciudad="Lisboa" data-kids="si">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🏰 Castillo · Lisboa</div>
+        <h3>Castelo de São Jorge</h3>
+        <div class="stars">★★★★½</div>
+        <p>Vistas 360° de toda Lisboa y el Tajo. Pavos reales en libertad. Audioguía gratuita en la app. El mejor mirador de la ciudad. Impresionante.</p>
+        <div class="card-meta">
+          <span class="meta-tag">~€15/adulto</span>
+          <span class="meta-tag azul">9:00 - 21:00</span>
+          <span class="meta-tag">👧 Top niños</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Lisboa">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">⛵ Monasterio · Belém</div>
+        <h3>Monasterio de los Jerónimos</h3>
+        <div class="stars">★★★★½</div>
+        <p>Arquitectura manuelina única. La tumba de Vasco da Gama. El claustro es de una belleza absoluta. UNESCO. Comprar tickets online para evitar colas.</p>
+        <div class="card-meta">
+          <span class="meta-tag">~€10/adulto</span>
+          <span class="meta-tag azul">Mar-Dom 9:30-17:30</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Lisboa">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🌅 Mirador · Alfama</div>
+        <h3>Miradouro de Santa Luzia</h3>
+        <div class="stars">★★★★★</div>
+        <p>Azulejos, Alfama y el Tajo de fondo. Para el tranvía 28 justo aquí. Uno de los miradores más fotografiados de Lisboa. Ideal al atardecer. Gratuito.</p>
+        <div class="card-meta">
+          <span class="meta-tag verde">Gratis</span>
+          <span class="meta-tag azul">24h abierto</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Lisboa" data-kids="si">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🐠 Acuario · Lisboa</div>
+        <h3>Oceanário de Lisboa</h3>
+        <div class="stars">★★★★★</div>
+        <p>Uno de los mejores acuarios de Europa. El tanque central es espectacular. Perfecto para todos los niños, incluido Emilio. Parque das Nações.</p>
+        <div class="card-meta">
+          <span class="meta-tag">~€22/adulto €14/niño</span>
+          <span class="meta-tag">👧 Top niños</span>
+          <span class="meta-tag azul">Reservar online</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+    <div class="card" data-ciudad="Lisboa" data-kids="si">
+      <div class="card-city-bar bar-lisboa"></div>
+      <div class="card-body">
+        <div class="card-type">🏯 Excursión · Sintra</div>
+        <h3>Palácio da Pena · Sintra</h3>
+        <div class="stars">★★★★★</div>
+        <p>A 30 min de Lisboa en carro. El palacio más colorido y espectacular de Portugal — tipo Disney real. En lo alto de una colina con bosques de cuento. Los niños quedan fascinados.</p>
+        <div class="card-meta">
+          <span class="meta-tag">~€14/adulto €12/niño</span>
+          <span class="meta-tag">👧 Top niños</span>
+          <span class="meta-tag azul">Reservar online</span>
+        </div>
+      </div>
+      <div class="card-status pendiente" onclick="toggleStatus(this)">○</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== HOTELES ======================== -->
+<div class="tab-content" id="tab-hoteles">
+  <div class="section-head">
+    <h2>Alojamiento</h2>
+    <span class="badge">3 estadías</span>
+  </div>
+
+  <div class="hotel-card">
+    <div class="hotel-icon">🏨</div>
+    <div class="hotel-info">
+      <h3>Porto · Familia Braganini</h3>
+      <p>Airbnb / Hotel en Porto · 3, 4 y 5 de Mayo</p>
+      <div class="hotel-input-area">
+        <textarea class="hotel-input" placeholder="Pegar aquí el nombre, dirección, código de acceso, teléfono del anfitrión o cualquier dato del alojamiento..."></textarea>
+      </div>
+    </div>
+    <div class="hotel-dates">3 – 5 Mayo<br><small>2 noches</small></div>
+  </div>
+
+  <div class="hotel-card">
+    <div class="hotel-icon">🏠</div>
+    <div class="hotel-info">
+      <h3>Porto · Familia Betocky</h3>
+      <p>Alojamiento separado en Porto (Gino, Paloma, Micaela, Lucía y Emilio)</p>
+      <div class="hotel-input-area">
+        <textarea class="hotel-input" placeholder="Datos del alojamiento de la familia Betocky en Porto..."></textarea>
+      </div>
+    </div>
+    <div class="hotel-dates">3 – 5 Mayo<br><small>2 noches</small></div>
+  </div>
+
+  <div class="hotel-card">
+    <div class="hotel-icon">🏨</div>
+    <div class="hotel-info">
+      <h3>Lisboa · Familia Braganini</h3>
+      <p>Airbnb / Hotel en Lisboa · 5 al 8 o 9 de Mayo</p>
+      <div class="hotel-input-area">
+        <textarea class="hotel-input" placeholder="Pegar aquí el nombre, dirección, código de acceso, teléfono del anfitrión o cualquier dato del alojamiento..."></textarea>
+      </div>
+    </div>
+    <div class="hotel-dates">5 – 8/9 Mayo<br><small>3-4 noches</small></div>
+  </div>
+
+  <div class="hotel-card">
+    <div class="hotel-icon">🏠</div>
+    <div class="hotel-info">
+      <h3>Lisboa · Familia Betocky</h3>
+      <p>Alojamiento de la familia Betocky en Lisboa</p>
+      <div class="hotel-input-area">
+        <textarea class="hotel-input" placeholder="Datos del alojamiento de la familia Betocky en Lisboa..."></textarea>
+      </div>
+    </div>
+    <div class="hotel-dates">5 – 8/9 Mayo<br><small>3-4 noches</small></div>
+  </div>
+
+  <div style="background:white; border-radius:14px; padding:1rem 1.25rem; box-shadow:var(--sombra); margin-top:0.5rem; font-size:0.82rem; color:var(--texto-suave);">
+    💡 <strong>Tip:</strong> Si los airbnb están en distintos barrios, coordinar la zona es clave para las salidas de grupo. En Lisboa, los barrios de Alfama, Príncipe Real o Chiado son los mejores para estar centrados.
+  </div>
+</div>
+
+<!-- ======================== LOGISTICA ======================== -->
+<div class="tab-content" id="tab-logistica">
+  <div class="section-head">
+    <h2>Logística del viaje</h2>
+  </div>
+
+  <div class="logistica-grid">
+    <div class="partido-box">
+      <h3>⚽ Partido Atlético de Madrid</h3>
+      <div class="partido-info">
+        <div class="partido-dato"><span>Fecha</span><span>9 de Mayo 2025</span></div>
+        <div class="partido-dato"><span>Hora</span><span>18:30h</span></div>
+        <div class="partido-dato"><span>Estadio</span><span>Metropolitano, Madrid</span></div>
+        <div class="partido-dato"><span>Salida Lisboa</span><span>Antes de las 10:00h</span></div>
+        <div class="partido-dato"><span>Ruta regreso</span><span>Lisboa → A6 → Badajoz → Madrid</span></div>
+      </div>
+    </div>
+
+    <div class="logistica-card">
+      <h3>🗺️ Rutas en carro</h3>
+      <div class="logistica-row"><span class="logistica-label">Madrid → Porto (A-62)</span><span class="logistica-val">~6h · 460 km</span></div>
+      <div class="logistica-row"><span class="logistica-label">Porto → Lisboa (A-1)</span><span class="logistica-val">~3h15 · 315 km</span></div>
+      <div class="logistica-row"><span class="logistica-label">Lisboa → Madrid (A-6)</span><span class="logistica-val">~6h · 630 km</span></div>
+      <div class="logistica-row"><span class="logistica-label">Lisboa → Sintra</span><span class="logistica-val">~30 min · 28 km</span></div>
+    </div>
+
+    <div class="logistica-card">
+      <h3>🚗 Datos del viaje</h3>
+      <div class="logistica-row"><span class="logistica-label">Vehículos</span><span class="logistica-val">2 carros</span></div>
+      <div class="logistica-row"><span class="logistica-label">Carro 1</span><span class="logistica-val">Familia Braganini</span></div>
+      <div class="logistica-row"><span class="logistica-label">Carro 2</span><span class="logistica-val">Familia Betocky</span></div>
+      <div class="logistica-row"><span class="logistica-label">Escoba alquilada</span><span class="logistica-val">Ver otro chat</span></div>
+      <div class="logistica-row"><span class="logistica-label">Viñetas Portugal</span><span class="logistica-val">Comprar online (€15)</span></div>
+    </div>
+
+    <div class="logistica-card">
+      <h3>📋 Checklist pre-viaje</h3>
+      <div class="logistica-row">
+        <span class="logistica-label">✅ Hoteles/Airbnb reservados</span>
+      </div>
+      <div class="logistica-row">
+        <span class="logistica-label">⬜ Viñeta Portugal comprada</span>
+      </div>
+      <div class="logistica-row">
+        <span class="logistica-label">⬜ Restaurantes reservados (Bota&Bira, Dona Amália…)</span>
+      </div>
+      <div class="logistica-row">
+        <span class="logistica-label">⬜ Entradas Oceanário / Sintra / Jerónimos</span>
+      </div>
+      <div class="logistica-row">
+        <span class="logistica-label">⬜ App de mapas offline descargada</span>
+      </div>
+      <div class="logistica-row">
+        <span class="logistica-label">⬜ Seguro de viaje (con bebé: importante)</span>
+      </div>
+    </div>
+
+    <div class="logistica-card">
+      <h3>💡 Tips con niños</h3>
+      <div class="logistica-row"><span class="logistica-label">Emilio (1 año)</span><span class="logistica-val">Sillita de carro, acuario y parques</span></div>
+      <div class="logistica-row"><span class="logistica-label">Vicente y Lucía (10)</span><span class="logistica-val">Crucero en rabelo, castillos</span></div>
+      <div class="logistica-row"><span class="logistica-label">Antonia y Micaela (12-13)</span><span class="logistica-val">Sintra, historia, fotos</span></div>
+      <div class="logistica-row"><span class="logistica-label">Descanso</span><span class="logistica-val">No sobrecargar días</span></div>
+    </div>
+
+    <div class="logistica-card">
+      <h3>📱 Apps útiles</h3>
+      <div class="logistica-row"><span class="logistica-label">Google Maps offline</span><span class="logistica-val">Descargar Portugal</span></div>
+      <div class="logistica-row"><span class="logistica-label">Via Verde Portugal</span><span class="logistica-val">Peajes automáticos</span></div>
+      <div class="logistica-row"><span class="logistica-label">Castelo de São Jorge</span><span class="logistica-val">Audioguía gratis</span></div>
+      <div class="logistica-row"><span class="logistica-label">WhatsApp</span><span class="logistica-val">Grupo de coordinación</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== PRESUPUESTO ======================== -->
+<div class="tab-content" id="tab-presupuesto">
+  <div class="section-head">
+    <h2>Presupuesto estimado</h2>
+    <span class="badge">Por familia</span>
+  </div>
+
+  <div class="presupuesto-total">
+    <div class="label">Total estimado por familia</div>
+    <div class="monto" id="total-presupuesto">€ ---</div>
+    <div class="nota">Modifica los valores abajo según tu plan real</div>
+  </div>
+
+  <div class="presupuesto-tabla">
+    <div class="presupuesto-row">
+      <span class="icon">🏨</span>
+      <span class="concepto">Alojamiento (6 noches)</span>
+      <span class="est">Airbnb o hotel</span>
+      <input type="number" class="presupuesto-input" value="800" onchange="calcTotal()" placeholder="€">
+    </div>
+    <div class="presupuesto-row">
+      <span class="icon">⛽</span>
+      <span class="concepto">Gasolina (ida y vuelta)</span>
+      <span class="est">~110L a ~€1.70</span>
+      <input type="number" class="presupuesto-input" value="190" onchange="calcTotal()" placeholder="€">
+    </div>
+    <div class="presupuesto-row">
+      <span class="icon">🛣️</span>
+      <span class="concepto">Peajes + Viñeta Portugal</span>
+      <span class="est">~€40 peajes + €15 viñeta</span>
+      <input type="number" class="presupuesto-input" value="55" onchange="calcTotal()" placeholder="€">
+    </div>
+    <div class="presupuesto-row">
+      <span class="icon">🍽️</span>
+      <span class="concepto">Restaurantes (6 días)</span>
+      <span class="est">~€80-120/día x familia</span>
+      <input type="number" class="presupuesto-input" value="600" onchange="calcTotal()" placeholder="€">
+    </div>
+    <div class="presupuesto-row">
+      <span class="icon">🏛️</span>
+      <span class="concepto">Entradas y actividades</span>
+      <span class="est">Castillos, barco, acuario...</span>
+      <input type="number" class="presupuesto-input" value="200" onchange="calcTotal()" placeholder="€">
+    </div>
+    <div class="presupuesto-row">
+      <span class="icon">🛍️</span>
+      <span class="concepto">Compras y souvenirs</span>
+      <span class="est">A gusto</span>
+      <input type="number" class="presupuesto-input" value="100" onchange="calcTotal()" placeholder="€">
+    </div>
+    <div class="presupuesto-row">
+      <span class="icon">🎫</span>
+      <span class="concepto">Partido Atlético (si aplica)</span>
+      <span class="est">Entradas ya compradas</span>
+      <input type="number" class="presupuesto-input" value="0" onchange="calcTotal()" placeholder="€">
+    </div>
+    <div class="presupuesto-row">
+      <span class="icon">🆘</span>
+      <span class="concepto">Imprevistos (10%)</span>
+      <span class="est">Siempre pasa algo</span>
+      <input type="number" class="presupuesto-input" value="195" onchange="calcTotal()" placeholder="€">
+    </div>
+  </div>
+</div>
+
+<!-- ======================== NOTAS ======================== -->
+<div class="tab-content" id="tab-notas">
+  <div class="section-head">
+    <h2>Notas del grupo</h2>
+  </div>
+
+  <div class="notas-area">
+    <h3>📌 Decisiones pendientes</h3>
+    <textarea class="notas-input" placeholder="Ej: ¿Nos quedamos el día 8 en Lisboa o volvemos? ¿Hacemos Sintra o Oceanário? ¿Reservamos Bota&Bira el sábado?...">• ¿Noche extra en Lisboa? (Depende de cuánto les guste)
+• ¿Sintra o Oceanário para el 7 de Mayo?
+• Confirmar restaurantes que requieren reserva anticipada</textarea>
+  </div>
+
+  <div class="notas-area">
+    <h3>🚗 Coordinación entre familias</h3>
+    <textarea class="notas-input" placeholder="Punto de encuentro, hora de salida, app de coordinación..."></textarea>
+  </div>
+
+  <div class="notas-area">
+    <h3>🍼 Notas para Emilio (1 año)</h3>
+    <textarea class="notas-input" placeholder="Sillita, cochecito, alimentos, medicamentos, pediatra de guardia en Portugal..."></textarea>
+  </div>
+
+  <div class="notas-area">
+    <h3>📝 Notas libres</h3>
+    <textarea class="notas-input" style="min-height:150px;" placeholder="Cualquier cosa que quieran recordar del viaje..."></textarea>
+  </div>
+</div>
+
+</main>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleStatus(el) {
+  const states = ['pendiente', 'confirmado', 'descartado'];
+  const icons = ['○', '✓', '✕'];
+  let idx = states.indexOf(el.className.replace('card-status ', '').trim());
+  idx = (idx + 1) % 3;
+  el.className = 'card-status ' + states[idx];
+  el.textContent = icons[idx];
+}
+
+function filterCards(type, ciudad, chip) {
+  const gridId = type === 'rest' ? 'rest-grid' : 'sitio-grid';
+  const grid = document.getElementById(gridId);
+  const cards = grid.querySelectorAll('.card');
+  
+  cards.forEach(card => {
+    if (ciudad === 'todos') {
+      card.style.display = 'block';
+    } else if (ciudad === 'niños') {
+      card.style.display = card.dataset.kids === 'si' ? 'block' : 'none';
+    } else {
+      card.style.display = card.dataset.ciudad === ciudad ? 'block' : 'none';
+    }
+  });
+
+  const filterGroup = chip.parentElement;
+  filterGroup.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+}
+
+function calcTotal() {
+  const inputs = document.querySelectorAll('.presupuesto-input');
+  let total = 0;
+  inputs.forEach(inp => total += parseFloat(inp.value) || 0);
+  document.getElementById('total-presupuesto').textContent = '€ ' + total.toLocaleString('es-ES');
+}
+
+// Init presupuesto
+calcTotal();
+</script>
+
+</body>
+</html>
