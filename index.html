@@ -81,18 +81,19 @@ const CITIES = [
   {
     id:'madrid0', name:'Madrid', fecha:'29–30 abr', pais:'España',
     color:'#7B2D8B',
-    hotel:{nombre:'Airbnb Olavide/Trafalgar',link:'https://es-l.airbnb.com/rooms/1036152002569554801',conf:'HM3ZZY9JZH',estado:'Pagado · S/826.78'},
+    hotel:{nombre:'Sin hotel — tránsito directo a Barcelona',link:'',conf:'',estado:'Tren a BCN a las 08:50'},
     grupo:'Bragagnini (4)',
-    clima:'Max ~24°C · Min ~13°C · Sol con posibles tormentas',
+    clima:'Max ~24°C · Min ~13°C · Solo unas horas de tránsito',
     actividades:[
-      {n:'Llegada MAD desde Lima (05:40)',nota:'Vuelo LA1605 — recoger maletas y descansar',done:false},
-      {n:'Tapas en Plaza Olavide',nota:'Barrio de moda — ambiente local sin turistas',done:false},
-      {n:'Paseo por Malasaña',nota:'Barrio bohemio ideal para tarde de llegada',done:false},
+      {n:'Llegada MAD T4S (05:40) · Desembarque',nota:'Vuelo IB0124 · Reserva YUKUNI · Bajar al control de migraciones',done:false},
+      {n:'Migraciones T4S',nota:'Rodolfo, Antonia, Vicente → Fila UE (~15 min) · Luciana → Fila no-UE (20-40 min) · Rodolfo recoge maleta y espera a Luciana a la salida',done:false},
+      {n:'Recoger maletas de bodega',nota:'Rodolfo y Luciana tienen 1 maleta 23kg c/u · Antonia y Vicente solo hand carry',done:false},
+      {n:'Cercanías C1 T4 → Atocha (GRATIS con iryo)',nota:'Planta -1 T4 · Mostrar código Aztec del billete iryo en tornos Renfe · Sale 05:46 · Llega Atocha ~06:15',done:false},
+      {n:'Desayuno tranquilo en Atocha',nota:'Llegan ~06:15-06:45 · Tienen hasta las 08:20 para embarcar el iryo · Cafeterías en la estación',done:false},
+      {n:'Tren Madrid → Barcelona',nota:'iryo 08:50 · Coche 5: 18A,18B,18C,18D · Llegada BCN 11:52',done:false},
     ],
     restaurantes:[
-      {n:'Casa Macareno',nota:'Tapas tradicionales',done:false},
-      {n:'Perrachica',nota:'Ambiente casual',done:false},
-      {n:'La Mina',nota:'Cocina madrileña',done:false},
+      {n:'Desayuno en Atocha',nota:'Hay cafeterías en la estación — tiempo justo antes del tren',done:false},
     ],
   },
   {
@@ -438,11 +439,11 @@ function App() {
         <div className="section">
           <div className="sub-title">✈️ Vuelos Iberia / LATAM · Reserva: YUKUNI</div>
           <div className="card">
-            {[['Ida — LIM → MAD','29 abr · 11:00 → 05:40+1 · LA1605'],['Vuelta — MAD → LIM','11 may · 13:20 → 18:20 · LA5392'],['Pasajeros','4 (Familia Bragagnini)'],['Vuelo','IB0124 · Reserva: YUKUNI'],['Embarque','10:20 · Grupo 3 · Cierre 10:45'],['Asientos','Rodolfo 25A · Luciana 25B · Antonia 24B · Vicente 24A'],['Bodega Rodolfo','1 x 23kg incluida'],['Bodega Luciana','1 x 23kg incluida'],['Bodega Antonia / Vicente','Solo hand carry 56x40x25cm']].map(([l,v],i) => (
+            {[['Ida — LIM → MAD','29 abr · 11:00 → 05:40+1 · IB0124 (LA1605)'],['Vuelta — MAD → LIM','11 may · 13:20 → 18:20 · LA5392'],['Reserva','YUKUNI'],['Embarque','10:20 · Grupo 3 · Cierre 10:45'],['Asientos ida','Rodolfo 25A · Luciana 25B · Antonia 24B · Vicente 24A'],['Bodega ida','2 maletas 23kg · Rodolfo y Luciana · US$190'],['Bodega vuelta','2 maletas 23kg · Rodolfo y Luciana · US$168'],['Antonia y Vicente','Solo hand carry 56x40x25cm'],['iryo Inicial Superior','Cambio de hora GRATIS el mismo día · Llamar 910 150 000']].map(([l,v],i) => (
               <div key={i} className="info-row"><span className="info-label">{l}</span><span className="info-value">{v}</span></div>
             ))}
           </div>
-          <div className="alert-blue"><div className="alert-title">✅ Equipaje ya resuelto</div>Rodolfo y Luciana ya tienen maleta 23kg incluida. Antonia y Vicente solo hand carry 56x40x25cm.</div>
+          <div className="alert-blue"><div className="alert-title">✅ Equipaje resuelto · Total maletas US$358</div>Ida: 2 maletas 23kg (US$190) · Vuelta: 2 maletas 23kg (US$168) · Rodolfo y Luciana. Antonia y Vicente van con hand carry 56x40x25cm.</div>
 
           <div className="sub-title">🚄 Tren Madrid ↔ Barcelona — iryo</div>
           <div className="card">
