@@ -85,7 +85,10 @@ const CITIES = [
     grupo:'Bragagnini (4)',
     clima:'Max ~24°C · Min ~13°C · Solo unas horas de tránsito',
     actividades:[
-      {n:'Llegada MAD T4S (05:40) · Desembarque',nota:'Vuelo IB0124 · Reserva YUKUNI · Bajar al control de migraciones',done:false},
+      {n:'Taxi desde Miraflores al aeropuerto',nota:'Salir a las 07:15 · Miraflores → Jorge Chávez ~45-60 min',done:false},
+      {n:'Check-in y migraciones salida Lima',nota:'Llegar ~08:15 · Vuelo IB0124 · Check-in Iberia · Migraciones salida Perú',done:false},
+      {n:'Embarque LIM → MAD',nota:'Vuelo IB0124 · Sale 11:00 · Embarque 10:20 · Cierre puertas 10:45 · Grupo 3',done:false},
+      {n:'Llegada MAD T4S (05:40 del 30 abr)',nota:'Vuelo IB0124 · Reserva YUKUNI · Bajar al control de migraciones',done:false},
       {n:'Migraciones T4S',nota:'Rodolfo, Antonia, Vicente → Fila UE (~15 min) · Luciana → Fila no-UE (20-40 min) · Rodolfo recoge maleta y espera a Luciana a la salida',done:false},
       {n:'Recoger maletas de bodega',nota:'Rodolfo y Luciana tienen 1 maleta 23kg c/u · Antonia y Vicente solo hand carry',done:false},
       {n:'Cercanías C1 T4 → Atocha (GRATIS con iryo)',nota:'Planta -1 T4 · Mostrar código Aztec del billete iryo en tornos Renfe · Sale 05:46 · Llega Atocha ~06:15',done:false},
@@ -93,7 +96,7 @@ const CITIES = [
       {n:'Tren Madrid → Barcelona',nota:'iryo 08:50 · Coche 5: 18A,18B,18C,18D · Llegada BCN 11:52',done:false},
     ],
     restaurantes:[
-      {n:'Desayuno en Atocha',nota:'Hay cafeterías en la estación — tiempo justo antes del tren',done:false},
+      {n:'Tren iryo MAD → BCN',nota:'08:50 · Coche 5: 18A,18B,18C,18D · Llegada BCN 11:52 · Tarifa Inicial Superior: cambio gratis mismo día',done:false},
     ],
   },
   {
@@ -254,8 +257,8 @@ const CHECKLIST_CATS = [
     'Livraria Lello Porto — comprar online ya',
     'Bodegas Gaia — reservar tour y cata',
     'Restaurante cumpleaños Luciana (2 mayo) — reservar',
-    'Maleta bodega Rodolfo y Luciana: 23kg incluida ✅',
-    'Agregar maleta bodega Antonia / Vicente si es necesario',,
+    'Maletas bodega pagadas: ida US$190 + vuelta US$168 ✅',
+    'Antonia y Vicente: preparar hand carry 56x40x25cm',,
     'Hotel noche 8 mayo — buscar en Madrid URGENTE',
     'Bar para ver Superclásico 10 mayo — cerca hotel Salamanca',
     'Parque Güell Barcelona — entradas online',
@@ -582,7 +585,7 @@ function App() {
 
           <div className="sub-title">🧳 Maletas recomendadas</div>
           <div className="card">
-            {[['Incluido en vuelo','4 x hand carry 12kg'],['Recomendado agregar','2 x maleta bodega 23kg'],['Dónde comprar','latam.com antes del viaje']].map(([l,v],i) => (
+            {[['Maleta bodega ida','2 x 23kg · Rodolfo y Luciana · US$190 ✅'],['Maleta bodega vuelta','2 x 23kg · Rodolfo y Luciana · US$168 ✅'],['Total maletas','US$358 ✅'],['Antonia y Vicente','Hand carry 56x40x25cm únicamente'],['Cercanías gratis iryo','Mostrar código Aztec en tornos T4 planta -1']].map(([l,v],i) => (
               <div key={i} className="info-row"><span className="info-label">{l}</span><span className="info-value">{v}</span></div>
             ))}
           </div>
